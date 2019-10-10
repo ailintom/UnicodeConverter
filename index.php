@@ -15,10 +15,10 @@
         define("YOD_00690486", "i00690486"); // Yod represented by i and U+0486. Bundled with additional conversions according to conventions used by the BTS, see https://github.com/JKatzwinkel/BTS-Manual and https://github.com/cplutte/bts
         define("YOD_0069032F", "i0069032F"); // Yod represented by i and U+032F
         define("YOD_A7BD", "iA7BD"); // Yod represented by U+A7BD
-        define("FORMAT_TRANSLITERATION", "Transliteration"); // Convert the from ASCII encoding used in the Transliteration font
-        define("FORMAT_TRLIT_CG_TIMES", "Trlit_CG Times");  // Convert the from ASCII encoding used in the Trlit_CG Times font
-        define("FORMAT_UMSCHRIFT_TTN", "Umschrift_TTn");  // Convert the from ASCII encoding used in the Umschrift_TTn font
-        define("FORMAT_UNICODE", "Unicode");  // Convert the from other Unicode encodings 
+        define("FORMAT_TRANSLITERATION", "Convert from Transliteration"); // Convert the from ASCII encoding used in the Transliteration font
+        define("FORMAT_TRLIT_CG_TIMES", "From Trlit_CG Times");  // Convert the from ASCII encoding used in the Trlit_CG Times font
+        define("FORMAT_UMSCHRIFT_TTN", "From Umschrift_TTn");  // Convert the from ASCII encoding used in the Umschrift_TTn font
+        define("FORMAT_UNICODE", "From Unicode");  // Convert the from other Unicode encodings 
         define("AMPERSAND_ESCAPE", ""); // The escape code used instead of the & in the web-convertor
 
         // Enclose each word in the passage containes between the brackets $open and $close in separate tags
@@ -248,7 +248,21 @@
         <?php
         if (!empty($input)) {
             ?>
-            <div><h3>The same passage in Unicode converted from <?= $format ?></h3>
+            <div><h3>The same passage in Unicode converted from <?php 
+            switch ($format) {
+    case FORMAT_TRANSLITERATION:
+        echo "Transliteration";
+        break;
+    case FORMAT_TRLIT_CG_TIMES:
+        echo "Trlit_CG Times";
+        break;
+    case FORMAT_UMSCHRIFT_TTN:
+        echo "Umschrift_TTn";
+        break;
+    case FORMAT_UNICODE:
+        echo "Unicode";
+        break;    
+}?></h3>
                 <?php ?>
                 <script src="clipboard.min.js"></script>
                 <script>
