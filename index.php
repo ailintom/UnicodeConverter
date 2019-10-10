@@ -12,34 +12,72 @@
         define("CAPITAL_ALEPH_AYIN", "capital");  // capital Aleph and Ayin used as default
         define("YOD_01310357", "i01310357"); // Yod represented by ı and U+0357
         define("YOD_00690357", "i00690357"); // Yod represented by i and U+0357 
-        define("YOD_00690486", "i00690486"); // Yod represented by i and U+0486
+        define("YOD_00690486", "i00690486"); // Yod represented by i and U+0486. Bundled with additional conversions according to conventions used by the BTS, see https://github.com/JKatzwinkel/BTS-Manual and https://github.com/cplutte/bts
         define("YOD_0069032F", "i0069032F"); // Yod represented by i and U+032F
         define("YOD_A7BD", "iA7BD"); // Yod represented by U+A7BD
         define("FORMAT_TRANSLITERATION", "Convert from Transliteration"); // Convert the from ASCII encoding used in the Transliteration font
         define("FORMAT_TRLIT_CG_TIMES", "From Trlit_CG Times");  // Convert the from ASCII encoding used in the Trlit_CG Times font
         define("FORMAT_UMSCHRIFT_TTN", "From Umschrift_TTn");  // Convert the from ASCII encoding used in the Umschrift_TTn font
         define("FORMAT_UNICODE", "From Unicode");  // Convert the from other Unicode encodings 
+        define("AMPERSAND_ESCAPE", ""); // The escape code used instead of the & in the web-convertor
 
-        function enclose($matches) {
-
-            return preg_replace('/\b(\w+)\b/u', $matches[1] . "$1" . $matches[3], $matches[2]);
-        }
-
-        // Enclose each word in the passage between the tags $open and $close in the tags
+        // Enclose each word in the passage containes between the brackets $open and $close in separate tags
+        // Example: enclose_all("aa (bb cc) dd", "(", ")") should return "aa (bb) (cc) dd"
         function enclose_all($input, $open, $close) {
             return preg_replace_callback('/(' . preg_quote($open) . '+)(.*?)((?<!' . preg_quote($close) . ')' . preg_quote($close) . '+(?!' . preg_quote($close) . '))/u', "enclose", $input);
         }
 
-        // Convert $input to Unicode
+        // Auxiliary function used in the previous function
+        function enclose($matches) {
+            return preg_replace('/\b(\w+)\b/u', $matches[1] . "$1" . $matches[3], $matches[2]);
+        }
+
+        // Transliteration adopted in the BTS and TLA requires passages surrounded by brackets to be replaces with passages having each word surrounded by brackets
+        // This function formats all types of brackets used in the BTS
+        function format_brackets_BTS($input) {
+            $res = strtr($input, array_combine(["&lt;", "&gt;"], ["〈", "〉"]));
+            $res = enclose_all($res, "[", "]");
+
+            $res = enclose_all($res, "⸮", "?");
+            $res = enclose_all($res, "ß", "?");
+            $res = enclose_all($res, "(", ")");
+            $res = enclose_all($res, "〈", "〉");
+
+            $res = enclose_all($res, "{", "}");
+            $res = enclose_all($res, "⸢", "⸣");
+            return $res;
+        }
+
+        function postformat_brackets_BTS($input) {
+            $res = (preg_replace("/([^\s〈({⸮⸢])([〈({⸮⸢]*=)/", "$1 $2", $input));
+            $res = (preg_replace("/(=)([\[〈({⸮⸢]+)/", "$2$1", $res));
+            return $res;
+        }
+
+        // convert_to_unicode is the principal function for converting transliteration to Unicode.
+        // It should be used when the code is employed outside the web-converter
+        // The function converts escaped $input to Unicode
         // Options:
         // $alephayin - convention for representing Egyptological Aleph and Ayin: either SMALL_ALEPH_AYIN or CAPITAL_ALEPH_AYIN
         // $yod - convention for representing Egyptological Yod: either YOD_01310357 or YOD_00690357 or YOD_00690486 or YOD_0069032F or YOD_A7BD
         // $format - source format: either FORMAT_TRANSLITERATION or FORMAT_TRLIT_CG_TIMES or FORMAT_UMSCHRIFT_TTN or FORMAT_UNICODE
         function convert_to_unicode($input, $alephayin = SMALL_ALEPH_AYIN, $yod = YOD_00690357, $format = FORMAT_TRANSLITERATION) {
-            $kdot = "ḳ";
-            $kdotUC = "Ḳ";
-            $saccent = "ś";
-            $saccentUC = "Ś";
+            $escaped = str_replace(AMPERSAND_ESCAPE, '&amp;', $input);
+            $res = convert_escaped_to_unicode($escaped, $alephayin, $yod, $format);
+            return str_replace('&amp;', AMPERSAND_ESCAPE, $res);
+        }
+
+        // converts already escaped $input to Unicode
+        // it is used in the web-converter, which escapes the ampersand with AMPERSAND_ESCAPE
+        // Options:
+        // $alephayin - convention for representing Egyptological Aleph and Ayin: either SMALL_ALEPH_AYIN or CAPITAL_ALEPH_AYIN
+        // $yod - convention for representing Egyptological Yod: either YOD_01310357 or YOD_00690357 or YOD_00690486 or YOD_0069032F or YOD_A7BD
+        // $format - source format: either FORMAT_TRANSLITERATION or FORMAT_TRLIT_CG_TIMES or FORMAT_UMSCHRIFT_TTN or FORMAT_UNICODE
+        function convert_escaped_to_unicode($input, $alephayin = SMALL_ALEPH_AYIN, $yod = YOD_00690357, $format = FORMAT_TRANSLITERATION) {
+            $kdotsmall = "ḳ";
+            $kdotcap = "Ḳ";
+            $saccentsmall = "ś";
+            $saccentcap = "Ś";
             $equal = "⸗";
             if ($alephayin === SMALL_ALEPH_AYIN) {
                 $aleph = "ꜣ";
@@ -58,10 +96,10 @@
                 $yodsmall = "i̯";
                 $yodcap = "I̯";
                 $equal = "=";
-                $kdot = "q";
-                $kdotUC = "Q";
-                $saccent = "s";
-                $saccentUC = "S";
+                $kdotsmall = "q";
+                $kdotcap = "Q";
+                $saccentsmall = "s";
+                $saccentcap = "S";
             } elseif ($yod === YOD_01310357) {
                 $yodsmall = "ı͗";
                 $yodcap = "I͗";
@@ -69,61 +107,49 @@
                 $yodsmall = "\u{A7BD}";
                 $yodcap = "\u{A7BC}";
             }
-            
+
             //Depending on the source format, two arrays of characters are defined, one with characters to be replaced and the other with the resulting characters 
             if ($format === FORMAT_TRANSLITERATION) {
-                $findchars = array('&quot;', 'x', 'A', 'a', 'i', 'H', 'X', 'c', 'S', 'q', 'T', 'D', 'o', '!', '@', '#', '$', '%', '^', '', '*', '_', '+', 'Q', 'I', 'O', 'C', 'V', 'v', '=');
-                $replacechars = array('&quot;', 'ḫ', $aleph, $ayin, $yodsmall, 'ḥ', 'ẖ', $saccent, 'š', $kdot, 'ṯ', 'ḏ', 'q', 'H', 'Ḥ', 'Ḫ', 'H̱', 'S', 'Š', 'T', 'Ṯ', 'D', 'Ḏ', $kdotUC, $yodcap, 'Q', $saccentUC, 'h̭', 'ṱ', $equal);
+                $findchars = array('&quot;', 'x', 'A', 'a', 'i', 'H', 'X', 'c', 'S', 'q', 'T', 'D', 'o', '!', '@', '#', '$', '%', '^', AMPERSAND_ESCAPE, '*', '_', '+', 'Q', 'I', 'O', 'C', 'V', 'v', '=');
+                $replacechars = array('&quot;', 'ḫ', $aleph, $ayin, $yodsmall, 'ḥ', 'ẖ', $saccentsmall, 'š', $kdotsmall, 'ṯ', 'ḏ', 'q', 'H', 'Ḥ', 'Ḫ', 'H̱', 'S', 'Š', 'T', 'Ṯ', 'D', 'Ḏ', $kdotcap, $yodcap, 'Q', $saccentcap, 'h̭', 'ṱ', $equal);
             } elseif ($format === FORMAT_TRLIT_CG_TIMES) {
                 $findchars = array('&quot;', 'x', 'A', 'a', 'i', 'H', 'X', 'c', 'S', 'q', 'T', 'D', 'o', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'Q', 'I', 'O', 'C', 'V', 'v', '', '!', 'L', '=');
-                $replacechars = array('&quot;', 'ḫ', $aleph, $ayin, $yodsmall, 'ḥ', 'ẖ', $saccent, 'š', $kdot, 'ṯ', 'ḏ', 'q', 'H', 'Ḥ', 'Ḫ', 'H̱', 'S', 'Š', 'T', 'Ṯ', 'D', 'Ḏ', $kdotUC, $yodcap, 'Q', $saccentUC, 'Ṱ', 'ṱ', '&amp;', 'Ú', '⸥', $equal);
+                $replacechars = array('&quot;', 'ḫ', $aleph, $ayin, $yodsmall, 'ḥ', 'ẖ', $saccentsmall, 'š', $kdotsmall, 'ṯ', 'ḏ', 'q', 'H', 'Ḥ', 'Ḫ', 'H̱', 'S', 'Š', 'T', 'Ṯ', 'D', 'Ḏ', $kdotcap, $yodcap, 'Q', $saccentcap, 'Ṱ', 'ṱ', '&amp;', 'Ú', '⸥', $equal);
             } elseif ($format === FORMAT_UMSCHRIFT_TTN) {
-                $findchars = array('&quot;', '~', 'X', '#', 'o', '|', 'H', 'x', 'È', 'Q', 'T', 'D', '!', '@', '$', '%', '^', '', '_', '+', 'O', 'V', 'v', '=', 'e', 'A', "'", '\\', 'c', '³', '²', 'E', '¢', '¦', '§', 'ß', '¾', 'µ', 'À', '', 'ƒ', '†', '‡', '‰', 'Š', '™', 'š', '¡', '£', '¥', '©', '®', '¯', '°', '±', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Æ', 'Ç', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Ï', 'Ð', 'Ñ', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', 'Ù', 'Ú', 'Ü', 'à', 'á', 'ä', 'å', 'æ', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'ï', 'ñ', 'ò', 'ó', 'õ', 'ö', 'ù', 'ú', 'û', 'ü', 'þ', 'S', 'C');
-                $replacechars = array('Ḥ', 'ï', 'ḫ', $aleph, $ayin, $yodsmall, 'ḥ', 'ẖ', $saccent, $kdot, 'ṯ', 'ḏ', 'H', 'č̣', 'H̱', 'Ḫ', '(', '⸢', 'u̯', 'i̯', 'Ḥ', 'Ṯ', 'T', $equal, 'D', 'ʾ', 'ʾ', '⸣', 'S', 'ṭ', 'č', 'Ḏ', 'Ǧ', 'ı͗', 'h̭', 'ṱ', 'ḍ', 'E', 'A', '|', 'ǧ', 'c', '²', 'T', '~', $aleph, 'ʕ', '_', 'Ṱ', 'e', 'h̭', 'ˉ́', 'ˉ', '˘', '˘́', 'ā́', 'Ẓ', 'ẓ', 'Q', 'Ġ', 'ṭ', 'Č', 'ḗ', $yodcap, '+', '³', 'ī́', $yodsmall, 'ŏ́', 'R̂', 'O', 'o', 'Ṣ', 'ṣ', $kdotUC, 'Č̣', 'ū́', $saccentUC, 'ắ', 'ă', 'ā', 'ġ', 'Ṭ', 'č', 'ĕ́', 'ĕ', 'e', 'ē', 'ĭ́', 'ĭ', 'ī', 'r̂', 'ŏ́', 'ŏ', 'ṓ', 'ō', 'ŭ́', 'ŭ', $kdot, 'ū', 'ắ', 'š', 'Š');
+                $findchars = array('&quot;', '~', 'X', '#', 'o', '|', 'H', 'x', 'È', 'Q', 'T', 'D', '!', '@', '$', '%', '^', AMPERSAND_ESCAPE, '_', '+', 'O', 'V', 'v', '=', 'e', 'A', "'", '\\', 'c', '³', '²', 'E', '¢', '¦', '§', 'ß', '¾', 'µ', 'À', '', 'ƒ', '†', '‡', '‰', 'Š', '™', 'š', '¡', '£', '¥', '©', '®', '¯', '°', '±', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Æ', 'Ç', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Ï', 'Ð', 'Ñ', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', 'Ù', 'Ú', 'Ü', 'à', 'á', 'ä', 'å', 'æ', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'ï', 'ñ', 'ò', 'ó', 'õ', 'ö', 'ù', 'ú', 'û', 'ü', 'þ', 'S', 'C');
+                $replacechars = array('Ḥ', 'ï', 'ḫ', $aleph, $ayin, $yodsmall, 'ḥ', 'ẖ', $saccentsmall, $kdotsmall, 'ṯ', 'ḏ', 'H', 'č̣', 'H̱', 'Ḫ', '(', '⸢', 'u̯', 'i̯', 'Ḥ', 'Ṯ', 'T', $equal, 'D', 'ʾ', 'ʾ', '⸣', 'S', 'ṭ', 'č', 'Ḏ', 'Ǧ', 'ı͗', 'h̭', 'ṱ', 'ḍ', 'E', 'A', '|', 'ǧ', 'c', '²', 'T', '~', $aleph, 'ʕ', '_', 'Ṱ', 'e', 'h̭', 'ˉ́', 'ˉ', '˘', '˘́', 'ā́', 'Ẓ', 'ẓ', 'Q', 'Ġ', 'ṭ', 'Č', 'ḗ', $yodcap, '+', '³', 'ī́', $yodsmall, 'ŏ́', 'R̂', 'O', 'o', 'Ṣ', 'ṣ', $kdotcap, 'Č̣', 'ū́', $saccentcap, 'ắ', 'ă', 'ā', 'ġ', 'Ṭ', 'č', 'ĕ́', 'ĕ', 'e', 'ē', 'ĭ́', 'ĭ', 'ī', 'r̂', 'ŏ́', 'ŏ', 'ṓ', 'ō', 'ŭ́', 'ŭ', $kdotsmall, 'ū', 'ắ', 'š', 'Š');
             } elseif ($format === FORMAT_UNICODE) {
                 $findchars = array("\u{A7BD}", 'ı̓', 'ı͗', 'ı҆', 'i̓', 'i͗', 'i҆', 'ỉ', "\u{A7BC}", 'I̓', 'I͗', 'I҆', 'Ỉ', 'ꜣ', 'Ꜣ', 'ȝ', 'Ȝ', 'Ꜥ', 'ꜥ', 'ʿ', '', '', '', '', '', '', '', '', '', '');
                 $replacechars = array($yodsmall, $yodsmall, $yodsmall, $yodsmall, $yodsmall, $yodsmall, $yodsmall, $yodsmall, $yodcap, $yodcap, $yodcap, $yodcap, $yodcap, $aleph, $aleph, $aleph, $aleph, $ayin, $ayin, $ayin, 'č̣', 'H̱', 'H̭', 'h̭', $aleph, $ayin, 'i̯', 'u̯', $yodsmall, $yodcap);
             }
             if ($yod === YOD_0069032F) { //Transliteration adopted in the BTS and TLA 
                 array_push($findchars, "&lt;", "&gt;", "ß", "⸗", "ḳ", "Ḳ", "ś", "Ś", "ṭ", "Ṭ", "č", "Č", "č̣", "Č̣");
-                array_push($replacechars, "〈", "〉", "⸮", $equal, $kdot, $kdotUC, $saccent, $saccentUC, "d", "D", "ṯ", "Ṯ", "ḏ", "Ḏ");
+                array_push($replacechars, "〈", "〉", "⸮", $equal, $kdotsmall, $kdotcap, $saccentsmall, $saccentcap, "d", "D", "ṯ", "Ṯ", "ḏ", "Ḏ");
             }
 
-
-            if ($yod === YOD_0069032F) { //Transliteration adopted in the BTS and TLA requires passages surrounded by brackets to be replaces with passages having each word surrounded by brackets
-                $input = strtr($input, array_combine(["&lt;", "&gt;"], ["〈", "〉"]));
-                $input = enclose_all($input, "[", "]");
-
-                $input = enclose_all($input, "⸮", "?");
-                $input = enclose_all($input, "ß", "?");
-                $input = enclose_all($input, "(", ")");
-                $input = enclose_all($input, "〈", "〉");
-
-                $input = enclose_all($input, "{", "}");
-                $input = enclose_all($input, "⸢", "⸣");
+            if ($yod === YOD_0069032F && function_exists("format_brackets_BTS")) { //Transliteration adopted in the BTS and TLA requires passages surrounded by brackets to be replaces with passages having each word surrounded by brackets
+                $input = format_brackets_BTS($input);
             }
-            
-            $res = strtr($input, array_combine($findchars, $replacechars));//This is the principal line, the conversion takes place here
-            
-            
-            if ($yod === YOD_0069032F) { //Transliteration adopted in the BTS and TLA requires passages surrounded by brackets to be replaces with passages having each word surrounded by brackets
+            $res = strtr($input, array_combine($findchars, $replacechars)); //This is the principal line, the conversion takes place here
 
-                $res = (preg_replace("/([^\s〈({⸮⸢])([〈({⸮⸢]*=)/", "$1 $2", $res));
-                $res = (preg_replace("/(=)([\[〈({⸮⸢]+)/", "$2$1", $res));
+            if ($yod === YOD_0069032F && function_exists("postformat_brackets_BTS")) { //Transliteration adopted in the BTS and TLA requires passages surrounded by brackets to be replaces with passages having each word surrounded by brackets
+                $res = postformat_brackets_BTS($res);
             }
             return $res;
         }
 
+// Here begins the code used to process the POST and GET parameters and to render the web-page of the online Unicode converter
+// The script accepts both POST and GET arguments        
         if (isset($_POST["input"])) {
             $format = filter_input(INPUT_POST, 'format', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
             $alephayin = filter_input(INPUT_POST, 'alephayin', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
             $yod = filter_input(INPUT_POST, 'yod', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
-            $input = htmlspecialchars(str_replace('&', '', $_POST["input"])); //filter_input(INPUT_GET, 'input', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $input = htmlspecialchars(str_replace('&', AMPERSAND_ESCAPE, $_POST["input"]));
         } elseif (isset($_GET["input"]) || isset($_GET["yod"])) {
             $format = filter_input(INPUT_GET, 'format', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
             $alephayin = filter_input(INPUT_GET, 'alephayin', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
             $yod = filter_input(INPUT_GET, 'yod', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
-            $input = htmlspecialchars(str_replace('&', '', $_GET["input"])); //filter_input(INPUT_GET, 'input', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $input = htmlspecialchars(str_replace('&', AMPERSAND_ESCAPE, $_GET["input"]));
         } else {
             $format = $alephayin = $yod = $input = "";
         }
@@ -136,7 +162,7 @@
                     echo(" autofocus ");
                 }
                 ?> style="width:100%; font-family:Roboto; letter-spacing: 0.2px;"><?php
-                                       echo (str_replace('', '&amp;', $input) );
+                                       echo (str_replace(AMPERSAND_ESCAPE, '&amp;', $input) );
                                        ?></textarea></div>
             <div class=limit style='padding-bottom: 3px;'> 
                 <input type="radio" id="<?= SMALL_ALEPH_AYIN ?>" name="alephayin" tabindex="-1" value="<?= SMALL_ALEPH_AYIN ?>"<?php
@@ -220,8 +246,7 @@
         if (!empty($input)) {
             ?>
             <div><h3>The same passage in Unicode</h3>
-                <?php
-                ?>
+                <?php ?>
                 <script src="clipboard.min.js"></script>
                 <script>
                     var clipboard = new Clipboard('.btn');
@@ -232,12 +257,10 @@
                         console.log(e);
                     });
                 </script>
-                <div class=limit><p><textarea name="output" id="out" autofocus rows="5" style="width:100%; font-family:Roboto; letter-spacing: 0.2px;"><?php
-                            //echo ( nl2br($res));
-                            echo ( convert_to_unicode($input, $alephayin, $yod, $format));
-                            ?></textarea></p><button class="btn" data-clipboard-target="#out"> Copy to clipboard</button></div>
-                                                                                                                
-                                                                                            </div>
+                <div class=limit><p><textarea name="output" id="out" autofocus rows="5" style="width:100%; font-family:Roboto; letter-spacing: 0.2px;"><?= 
+                str_replace(AMPERSAND_ESCAPE, '&amp;', convert_escaped_to_unicode($input, $alephayin, $yod, $format)) ?></textarea></p>
+                            <button class="btn" data-clipboard-target="#out"> Copy to clipboard</button></div>
+                                                                                                                                                            </div>
             <?php
         }
         ?>
@@ -260,5 +283,6 @@
                 In the “From Unicode” mode this page can convert the IFAO Unicode as well as the <a href="https://apagreekkeys.org/technicalDetails.html">private use characters used only in the New Athena Unicode font</a> to the convention used on this page.
                 Another <a href="http://helmwo.net/Umschrift/README.html">tool by H.&nbsp;Wodtke</a> uses italicised mathematical symbols instead of Latin letters to make transliterated passages look cursive without changing the font style (thus, the result is incompatible with any of the current encoding conventions). 
 </div>  
+        <div>Source code <a href="https://github.com/ailintom/UnicodeConverter">available on GitHub</a>.</div>        
 </body>
 </html>
