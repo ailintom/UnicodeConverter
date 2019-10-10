@@ -23,17 +23,20 @@
 
         // Enclose each word in the passage containes between the brackets $open and $close in separate tags
         // Example: enclose_all("aa (bb cc) dd", "(", ")") should return "aa (bb) (cc) dd"
+        // This function is only needed to format the transliteration for the BTS
         function enclose_all($input, $open, $close) {
             return preg_replace_callback('/(' . preg_quote($open) . '+)(.*?)((?<!' . preg_quote($close) . ')' . preg_quote($close) . '+(?!' . preg_quote($close) . '))/u', "enclose", $input);
         }
 
         // Auxiliary function used in the previous function
+        // This function is only needed to format the transliteration for the BTS
         function enclose($matches) {
             return preg_replace('/\b(\w+)\b/u', $matches[1] . "$1" . $matches[3], $matches[2]);
         }
 
         // Transliteration adopted in the BTS and TLA requires passages surrounded by brackets to be replaces with passages having each word surrounded by brackets
         // This function formats all types of brackets used in the BTS
+        // This function is only needed to format the transliteration for the BTS
         function format_brackets_BTS($input) {
             $res = strtr($input, array_combine(["&lt;", "&gt;"], ["〈", "〉"]));
             $res = enclose_all($res, "[", "]");
@@ -113,7 +116,7 @@
                 $findchars = array('&quot;', 'x', 'A', 'a', 'i', 'H', 'X', 'c', 'S', 'q', 'T', 'D', 'o', '!', '@', '#', '$', '%', '^', AMPERSAND_ESCAPE, '*', '_', '+', 'Q', 'I', 'O', 'C', 'V', 'v', '=');
                 $replacechars = array('&quot;', 'ḫ', $aleph, $ayin, $yodsmall, 'ḥ', 'ẖ', $saccentsmall, 'š', $kdotsmall, 'ṯ', 'ḏ', 'q', 'H', 'Ḥ', 'Ḫ', 'H̱', 'S', 'Š', 'T', 'Ṯ', 'D', 'Ḏ', $kdotcap, $yodcap, 'Q', $saccentcap, 'h̭', 'ṱ', $equal);
             } elseif ($format === FORMAT_TRLIT_CG_TIMES) {
-                $findchars = array('&quot;', 'x', 'A', 'a', 'i', 'H', 'X', 'c', 'S', 'q', 'T', 'D', 'o', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'Q', 'I', 'O', 'C', 'V', 'v', '', '!', 'L', '=');
+                $findchars = array('&quot;', 'x', 'A', 'a', 'i', 'H', 'X', 'c', 'S', 'q', 'T', 'D', 'o', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'Q', 'I', 'O', 'C', 'V', 'v', AMPERSAND_ESCAPE, '!', 'L', '=');
                 $replacechars = array('&quot;', 'ḫ', $aleph, $ayin, $yodsmall, 'ḥ', 'ẖ', $saccentsmall, 'š', $kdotsmall, 'ṯ', 'ḏ', 'q', 'H', 'Ḥ', 'Ḫ', 'H̱', 'S', 'Š', 'T', 'Ṯ', 'D', 'Ḏ', $kdotcap, $yodcap, 'Q', $saccentcap, 'Ṱ', 'ṱ', '&amp;', 'Ú', '⸥', $equal);
             } elseif ($format === FORMAT_UMSCHRIFT_TTN) {
                 $findchars = array('&quot;', '~', 'X', '#', 'o', '|', 'H', 'x', 'È', 'Q', 'T', 'D', '!', '@', '$', '%', '^', AMPERSAND_ESCAPE, '_', '+', 'O', 'V', 'v', '=', 'e', 'A', "'", '\\', 'c', '³', '²', 'E', '¢', '¦', '§', 'ß', '¾', 'µ', 'À', '', 'ƒ', '†', '‡', '‰', 'Š', '™', 'š', '¡', '£', '¥', '©', '®', '¯', '°', '±', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Æ', 'Ç', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Ï', 'Ð', 'Ñ', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', 'Ù', 'Ú', 'Ü', 'à', 'á', 'ä', 'å', 'æ', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'ï', 'ñ', 'ò', 'ó', 'õ', 'ö', 'ù', 'ú', 'û', 'ü', 'þ', 'S', 'C');
@@ -231,7 +234,7 @@
                             <br>Unlike the captital and small variants of aleph and ayin, different encodings of yod are despite similar outlook mutually incompatible; computer software considers them completely different signs, not variants of the same sign.
                             <br>i̯  (i and U+032F) is used in the Berlin Text System (BTS) to encode weak last consonants in verbs. It corresponds to i in the non-Unicode online version of the <a href="http://aaew.bbaw.de/tla/servlet/TlaLogin">Thesaurus Linguae Aegyptiae</a>. With this option selected, the converter also makes other transformations to make the transliteration compatible with the BTS.
                             <br>Unicode 12.0 (March 2019) defines new characters for Egyptological Yod: &#xA7BD; = U+A7BD (Latin small letter glottal I) and &#xA7BC; = U+A7BC (Latin capital letter glottal I).
-                            This should become the new standard. However, as of October 2019, there are no freely available fonts supporting these characters.
+                            This should become the new standard. Yet as of October 2019, there are no freely available fonts supporting these characters.
                         </div>
                     </div>
                 </div>
