@@ -65,7 +65,7 @@
         // $yod - convention for representing Egyptological Yod: either YOD_01310357 or YOD_00690357 or YOD_00690486 or YOD_0069032F or YOD_A7BD
         // $format - source format: either FORMAT_TRANSLITERATION or FORMAT_TRLIT_CG_TIMES or FORMAT_UMSCHRIFT_TTN or FORMAT_UNICODE
         function convert_to_unicode($input, $alephayin = SMALL_ALEPH_AYIN, $yod = YOD_00690357, $format = FORMAT_TRANSLITERATION) {
-            $escaped = str_replace(AMPERSAND_ESCAPE, '&amp;', $input);
+            $escaped = htmlspecialchars(str_replace(AMPERSAND_ESCAPE, '&amp;', $input));
             $res = convert_escaped_to_unicode($escaped, $alephayin, $yod, $format);
             return str_replace('&amp;', AMPERSAND_ESCAPE, $res);
         }
