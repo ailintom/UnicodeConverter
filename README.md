@@ -1,6 +1,6 @@
 # Transliteration to Unicode Converter
 
-This script converts Egyptian transliteration passages set in non-Unicode fonts into Unicode following the conventions outlined by D. A. Werning and D. Mastronarde and used in Totenbucharchiv, Ramses, Science in Ancient Egypt and other digital Egyptological projects as well as by some publishers.
+This PHP script converts Egyptian transliteration passages set in non-Unicode fonts into Unicode following the conventions outlined by D. A. Werning and D. Mastronarde and used in Totenbucharchiv, Ramses, Science in Ancient Egypt and other digital Egyptological projects as well as by some publishers.
 
 The Transliteration to Unicode Converter is running at https://pnm.uni-mainz.de/tools/unicode/
 
