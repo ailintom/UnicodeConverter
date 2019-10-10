@@ -1,0 +1,21 @@
+<IfModule mod_headers.c>
+
+<FilesMatch "\.(php)$">
+  Header set Content-Language en
+  Header append Vary: Accept-Encoding
+
+</FilesMatch>
+
+</IfModule>
+
+<ifmodule mod_deflate.c>
+AddOutputFilterByType DEFLATE text/text text/html text/plain text/xml text/css application/x-javascript application/javascript
+BrowserMatch ^Mozilla/4 gzip-only-text/html
+BrowserMatch ^Mozilla/4\.0[678] no-gzip
+BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+BrowserMatch \bMSI[E] !no-gzip !gzip-only-text/html
+</ifmodule>
+AddDefaultCharset utf-8
+<IfModule mod_mime.c>
+  AddCharset utf-8 .php .html .xml .css .js .json
+</IfModule>
