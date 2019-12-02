@@ -164,7 +164,7 @@
                 if (empty($input)) {
                     echo(" autofocus ");
                 }
-                ?> style="width:100%; font-family:Roboto; letter-spacing: 0.2px;"><?php
+                ?> style="width:100%; font-family:Roboto, New Athena Unicode; letter-spacing: 0.2px;"><?php
                                        echo (str_replace(AMPERSAND_ESCAPE, '&amp;', $input) );
                                        ?></textarea></div>
             <div class=limit style='padding-bottom: 3px;'> 
@@ -234,7 +234,7 @@
                             <br>Unlike the captital and small variants of aleph and ayin, different encodings of yod are despite similar outlook mutually incompatible; computer software considers them completely different signs, not variants of the same sign.
                             <br>i̯  (i and U+032F) is used in the Berlin Text System (BTS) to encode weak last consonants in verbs. It corresponds to i in the non-Unicode online version of the <a href="http://aaew.bbaw.de/tla/servlet/TlaLogin">Thesaurus Linguae Aegyptiae</a>. With this option selected, the converter also makes other transformations to make the transliteration compatible with the BTS.
                             <br>Unicode 12.0 (March 2019) defines new characters for Egyptological Yod: &#xA7BD; = U+A7BD (Latin small letter glottal I) and &#xA7BC; = U+A7BC (Latin capital letter glottal I).
-                            This should become the new standard. Yet as of October 2019, there are no freely available fonts supporting these characters.
+                            This should become the new standard. Yet as of December 2019, these characters are only supported by one freely available font, <a href="https://apagreekkeys.org/NAUdownload.html">New Athena Unicode</a>.
                         </div>
                     </div>
                 </div>
@@ -274,7 +274,7 @@
                         console.log(e);
                     });
                 </script>
-                <div class=limit><p><textarea name="output" id="out" autofocus rows="5" style="width:100%; font-family:Roboto; letter-spacing: 0.2px;"><?= 
+                <div class=limit><p><textarea name="output" id="out" autofocus rows="5" style="width:100%; font-family:Roboto, New Athena Unicode; letter-spacing: 0.2px;"><?= 
                 str_replace(AMPERSAND_ESCAPE, '&amp;', convert_escaped_to_unicode($input, $alephayin, $yod, $format)) ?></textarea></p>
                             <button class="btn" data-clipboard-target="#out"> Copy to clipboard</button></div>
                                                                                                                                                             </div>
