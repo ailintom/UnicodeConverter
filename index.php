@@ -188,7 +188,7 @@
                             This is at odds with modern practice, not least because non-Unicode fonts do not distinguish between these characters.
                             Hence, D.&nbsp;A.&nbsp;Werning earlier suggested using capital aleph and ayin in all positions, as capital aleph and ayin look better in most modern fonts. This practice is followed in the <a href="http://elephantine.smb.museum">Rubensohn-Bibliothek</a>.
                             However, in earlier Egyptological publications and most notably in A.&nbsp;H.&nbsp;Gardiner’s Egyptian Grammar, capital and small forms are distinguished from one another, as <a href="http://evertype.com/pipermail/egyptian_evertype.com/2007-December.txt">pointed out by W.&nbsp;Schenkel</a>.
-                            Besides, distinguishing between lower- and upper-case characters is deemed semantically more correct than always using capital letters. Hence, the <a href="http://ramses.ulg.ac.be/">Ramses Project</a> and <a href="http://totenbuch.awk.nrw.de/register/besitzer">Totenbucharchiv</a> use small aleph and ayin. Werning adopts this practice in the modern version (2018) of his convention.
+                            Besides, distinguishing between lower- and upper-case characters is deemed semantically more correct than always using capital letters. Hence, the <a href="http://ramses.ulg.ac.be/">Ramses Project</a> and <a href="http://totenbuch.awk.nrw.de/register/besitzer">Totenbucharchiv</a> use small aleph and ayin. Werning adopts this practice in the modern version (2021) of his convention.
                         </div>
                     </div>
                 </div>
@@ -217,7 +217,7 @@
                 if ($yod === YOD_A7BD) {
                     echo(" checked");
                 }
-                ?>> <label for="<?= YOD_A7BD ?>"><span title="accoring to Unicode 12.0">i > &#xA7BD; = U+A7BD</span></label>
+                ?>> <label for="<?= YOD_A7BD ?>"><span title="as defined by Werning in 2021 and according to Unicode 12.0">i > &#xA7BD; = U+A7BD</span></label>
 
 
                 (<a href="#popup2" tabindex="-1" >details</a>)
@@ -225,16 +225,21 @@
                     <div class="popup">
                         <a class="close" href="#" tabindex="-1" >&times;</a>
                         <div class="content">
-                            <h2>i͗</h2>
+                            <h2>&#xA7BD</h2>
                             The encoding of the Egyptological yod in Unicode remains an unsettled issue. Generally, one of the three combining signs U+0313, U+0357, or U+0486 can be used to transform an i into yod. 
-                            <br>In 2017, D.&nbsp;A.&nbsp;Werning advocated the use of the dotless ı (U+0131) in combination with U+0357, and this norm is <a href="http://www.stoa.org/epidoc/gl/latest/app-epi-egyptology.html">adopted in EpiDoc</a>.
-                            However, <a href="http://unicode.org/faq/char_combmark.html#20">the official Unicode FAQ</a> recommends using the ordinary i (U+0069) as base for any of the three combining diacritic characters.
-                            <br>The ordinary i is used in combination with U+0357 in the <a href="http://totenbuch.awk.nrw.de/register/besitzer">Totenbucharchiv</a> and is <a href="http://ucbclassics.dreamhosters.com/djm/pdfs/AboutDemoticEgyptianUnicode09.pdf">recommended by D.&nbsp;Mastronarde</a> Werning adopts this approach in the latest (2018) version of his convention.
+                            <br>In 2017, D.&nbsp;A.&nbsp;Werning recommended the use of the dotless ı (U+0131) in combination with U+0357, and this recommendation was adopted in the <a href="https://aaew.bbaw.de/berlin-text-system"><i>Berlin Text System</i> (BTS)</a> of the <a href="https://aaew.bbaw.de/tla/"><i>Thesaurus Linguae Aegyptiae</i></a> and was recommended on the <a href="http://www.stoa.org/epidoc/gl/latest/app-epi-egyptology.html">EpiDoc page</a>.
+                            However, the official Unicode FAQ then recommended using the ordinary i (U+0069) as base for any of the three combining diacritic characters.
+                            <br>The ordinary i is used in combination with U+0357 in the <a href="http://totenbuch.awk.nrw.de/register/besitzer">Totenbucharchiv</a> and is <a href="http://ucbclassics.dreamhosters.com/djm/pdfs/AboutDemoticEgyptianUnicode09.pdf">recommended by D.&nbsp;Mastronarde</a>. Werning advocated this approach in the 2018 version of his recommendations.
                             <br>Another widely accepted approach is the use of the ordinary i in combination with U+0486. This combination is used in <a href="https://jsesh.qenherkhopeshef.org/varia/transliteration">the keyboard layouts by S.&nbsp;Rosmorduc</a>  and recommended by <a href="https://brill.com/fileasset/downloads_static/static_typefacedownload_typefaceuserguide.pdf">Brill Publishers</a>.
-                            <br>Unlike the captital and small variants of aleph and ayin, different encodings of yod are despite similar outlook mutually incompatible; computer software considers them completely different signs, not variants of the same sign.
-                            <br>i̯  (i and U+032F) is used in the Berlin Text System (BTS) to encode weak last consonants in verbs. It corresponds to i in the non-Unicode online version of the <a href="http://aaew.bbaw.de/tla/servlet/TlaLogin">Thesaurus Linguae Aegyptiae</a>. With this option selected, the converter also makes other transformations to make the transliteration compatible with the BTS.
+                            
+                            <br>
                             <br>Unicode 12.0 (March 2019) defines new characters for Egyptological Yod: &#xA7BD; = U+A7BD (Latin small letter glottal I) and &#xA7BC; = U+A7BC (Latin capital letter glottal I).
-                            This should become the new standard. Yet as of December 2019, these characters are only supported by one freely available font, <a href="https://apagreekkeys.org/NAUdownload.html">New Athena Unicode</a>.
+                            This should become the new standard. Yet as of September 2021, these characters are only supported by three freely available fonts, <a href="https://apagreekkeys.org/NAUdownload.html">New Athena Unicode</a> and the italic variants of the <a href="https://github.com/googlefonts/noto-fonts/releases">2020 versions of Noto Sans and Noto Serif</a>.
+                            The use of U+A7BD and U+A7BC is the <a href="https://www.archaeologie.hu-berlin.de/de/aknoa/service/links/egyptological-transliteration-unicode">current recommendation by D.&nbsp;A.&nbsp;Werning</a>.
+                            <br>Unlike the capital and small variants of aleph and ayin, different encodings of yod are despite similar outlook mutually incompatible; as per <a href="http://unicode.org/faq/char_combmark.html#21">the official Unicode FAQ</a>, computer software considers them completely different signs, not variants of the same sign.
+                            <h2>i̯</h2>
+                            i̯  (i and U+032F) is used in the <i>Berlin Text System</i> (BTS) to encode weak last consonants in verbs. It corresponds to i in the non-Unicode online version of the <a href="http://aaew.bbaw.de/tla/servlet/TlaLogin"><i>Thesaurus Linguae Aegyptiae</i></a>. With this option selected, the Converter also makes other transformations to make the transliteration compatible with the BTS.
+                            <h2>Acknowldgements</h2>I am grateful to D.&nbsp;A.&nbsp;Werning for valuable corrections to this page.
                         </div>
                     </div>
                 </div>
@@ -282,7 +287,7 @@
         }
         ?>
         <div class=limit style='padding-top: 18px;'>  This page converts Egyptian transliteration passages set in non-Unicode fonts into Unicode
-            following the conventions outlined by <a href="http://hdl.handle.net/21.11101/0000-0000-9E1A-2"> D.&nbsp;A.&nbsp;Werning</a> and <a href="http://ucbclassics.dreamhosters.com/djm/pdfs/AboutDemoticEgyptianUnicode09.pdf">D.&nbsp;Mastronarde</a> and used in  <a href='http://totenbuch.awk.nrw.de/'>Totenbucharchiv</a>, <a href='http://ramses.ulg.ac.be/'>Ramses</a>, <a href="http://sae.saw-leipzig.de/en/about/">Science in Ancient Egypt</a> and other digital Egyptological projects as well as by some of the publishers. 
+            following the conventions outlined by <a href="https://www.archaeologie.hu-berlin.de/de/aknoa/service/links/egyptological-transliteration-unicode"> D.&nbsp;A.&nbsp;Werning</a> and <a href="http://ucbclassics.dreamhosters.com/djm/pdfs/AboutDemoticEgyptianUnicode09.pdf">D.&nbsp;Mastronarde</a> and used in  <a href='http://totenbuch.awk.nrw.de/'>Totenbucharchiv</a>, <a href='http://ramses.ulg.ac.be/'>Ramses</a>, <a href="https://sae.saw-leipzig.de/en">Science in Ancient Egypt</a> and other digital Egyptological projects as well as by some of the publishers. 
             S.&nbsp;Rosmorduc maintains <a href='http://jsesh.qenherkhopeshef.org/varia/transliteration'>a list of compatible fonts</a>.
                 <br>This converter supports the encoding schemes used in the fonts Transliteration (CCER), Trlit_CG Times (<a href="http://www.wepwawet.nl/dmd/fonts.htm">The Deir el-Medina Database</a>), and Umschrift_TTn (<a href="http://wwwuser.gwdg.de/~lingaeg/lingaeg-stylesheet.htm">F.&nbsp;Junge/Universität Göttingen</a>) as well as different Unicode schemes as input.
                 <br>
