@@ -67,7 +67,7 @@
         function convert_to_unicode($input, $alephayin = SMALL_ALEPH_AYIN, $yod = YOD_00690357, $format = FORMAT_TRANSLITERATION) {
             $escaped = htmlspecialchars(str_replace('&', AMPERSAND_ESCAPE, $input));
             $res = convert_escaped_to_unicode($escaped, $alephayin, $yod, $format);
-            return str_replace( AMPERSAND_ESCAPE, '&amp;', $res);
+            return str_replace(AMPERSAND_ESCAPE, '&amp;', $res);
         }
 
         // converts already escaped $input to Unicode
@@ -231,11 +231,11 @@
                             However, the official Unicode FAQ then recommended using the ordinary i (U+0069) as base for any of the three combining diacritic characters.
                             <br>The ordinary i is used in combination with U+0357 in the <a href="http://totenbuch.awk.nrw.de/register/besitzer">Totenbucharchiv</a> and is <a href="http://ucbclassics.dreamhosters.com/djm/pdfs/AboutDemoticEgyptianUnicode09.pdf">recommended by D.&nbsp;Mastronarde</a>. Werning advocated this approach in the 2018 version of his recommendations.
                             <br>Another widely accepted approach is the use of the ordinary i in combination with U+0486. This combination is used in <a href="https://jsesh.qenherkhopeshef.org/varia/transliteration">the keyboard layouts by S.&nbsp;Rosmorduc</a>  and recommended by <a href="https://brill.com/fileasset/downloads_static/static_typefacedownload_typefaceuserguide.pdf">Brill Publishers</a>.
-                            
+
                             <br>
                             <br>Unicode 12.0 (March 2019) defines new characters for Egyptological Yod: &#xA7BD; = U+A7BD (Latin small letter glottal I) and &#xA7BC; = U+A7BC (Latin capital letter glottal I).
-                            This should become the new standard. Yet as of September 2021, these characters are only supported by three freely available fonts, <a href="https://apagreekkeys.org/NAUdownload.html">New Athena Unicode</a> and the italic variants of the <a href="https://github.com/googlefonts/noto-fonts/releases">2020 versions of Noto Sans and Noto Serif</a>. <a href="https://brill.com/page/290?language=en">The Brill Typeset 4.0</a> also supports these and other transliteration characters; however, it only free for non-commercial use. 
-                            The use of U+A7BD and U+A7BC is the <a href="https://www.archaeologie.hu-berlin.de/de/aknoa/service/links/egyptological-transliteration-unicode">current recommendation by D.&nbsp;A.&nbsp;Werning</a>.
+                            This should become the new standard. Yet as of September 2021, these characters are only supported by three freely available fonts, <a href="https://apagreekkeys.org/NAUdownload.html">New Athena Unicode</a> and the italic variants of the <a href="https://github.com/googlefonts/noto-fonts/releases">2020 versions of Noto Sans and Noto Serif</a>. <a href="https://brill.com/page/290?language=en">The Brill Typeset 4.0</a> also supports these and other transliteration characters; however, it only free for non-commercial use. See <a href="Fonts%20with%20A7BD.pdf">a comparison of these fonts</a>. 
+                            <br>The use of U+A7BD and U+A7BC is the <a href="https://www.archaeologie.hu-berlin.de/de/aknoa/service/links/egyptological-transliteration-unicode">current recommendation by D.&nbsp;A.&nbsp;Werning</a>.
                             <br>Unlike the capital and small variants of aleph and ayin, different encodings of yod are despite similar outlook mutually incompatible; as per <a href="http://unicode.org/faq/char_combmark.html#21">the official Unicode FAQ</a>, computer software considers them completely different signs, not variants of the same sign.
                             <h2>i̯</h2>
                             i̯  (i and U+032F) is used in the <i>Berlin Text System</i> (BTS) to encode weak last consonants in verbs. It corresponds to i in the non-Unicode online version of the <a href="http://aaew.bbaw.de/tla/servlet/TlaLogin"><i>Thesaurus Linguae Aegyptiae</i></a>. With this option selected, the Converter also makes other transformations to make the transliteration compatible with the BTS.
@@ -253,21 +253,22 @@
         <?php
         if (!empty($input)) {
             ?>
-            <div><h3>The same passage in Unicode converted from <?php 
-            switch ($format) {
-    case FORMAT_TRANSLITERATION:
-        echo "Transliteration";
-        break;
-    case FORMAT_TRLIT_CG_TIMES:
-        echo "Trlit_CG Times";
-        break;
-    case FORMAT_UMSCHRIFT_TTN:
-        echo "Umschrift_TTn";
-        break;
-    case FORMAT_UNICODE:
-        echo "Unicode";
-        break;    
-}?></h3>
+            <div><h3>The same passage in Unicode converted from <?php
+                    switch ($format) {
+                        case FORMAT_TRANSLITERATION:
+                            echo "Transliteration";
+                            break;
+                        case FORMAT_TRLIT_CG_TIMES:
+                            echo "Trlit_CG Times";
+                            break;
+                        case FORMAT_UMSCHRIFT_TTN:
+                            echo "Umschrift_TTn";
+                            break;
+                        case FORMAT_UNICODE:
+                            echo "Unicode";
+                            break;
+                    }
+                    ?></h3>
                 <?php ?>
                 <script src="clipboard.min.js"></script>
                 <script>
@@ -279,10 +280,9 @@
                         console.log(e);
                     });
                 </script>
-                <div class=limit><p><textarea name="output" id="out" autofocus rows="5" style="width:100%; font-family:Roboto, New Athena Unicode; letter-spacing: 0.2px;"><?= 
-                str_replace(AMPERSAND_ESCAPE, '&amp;', convert_escaped_to_unicode($input, $alephayin, $yod, $format)) ?></textarea></p>
-                            <button class="btn" data-clipboard-target="#out"> Copy to clipboard</button></div>
-                                                                                                                                                            </div>
+                <div class=limit><p><textarea name="output" id="out" autofocus rows="5" style="width:100%; font-family:Roboto, New Athena Unicode; letter-spacing: 0.2px;"><?= str_replace(AMPERSAND_ESCAPE, '&amp;', convert_escaped_to_unicode($input, $alephayin, $yod, $format)) ?></textarea></p>
+                                        <button class="btn" data-clipboard-target="#out"> Copy to clipboard</button></div>
+                                                                                                                                                                        </div>
             <?php
         }
         ?>
@@ -305,6 +305,30 @@
                 In the “From Unicode” mode this page can convert the IFAO Unicode as well as the <a href="https://apagreekkeys.org/technicalDetails.html">private use characters used only in the New Athena Unicode font</a> to the convention used on this page.
                 Another <a href="http://helmwo.net/Umschrift/README.html">tool by H.&nbsp;Wodtke</a> uses italicised mathematical symbols instead of Latin letters to make transliterated passages look cursive without changing the font style (thus, the result is incompatible with any of the current encoding conventions). 
 </div>  
-        <div>Source code <a href="https://github.com/ailintom/UnicodeConverter">available on GitHub</a>.</div>        
+        <div>Source code <a href="https://github.com/ailintom/UnicodeConverter">available on GitHub</a>.
+          <br>  <br> <a href="#popup4" tabindex="-1" >About / Impressum</a></div>       
+                        <div id="popup4" class="overlay">
+                    <div class="popup">
+                        <a class="close" href="#" tabindex="-1" >&times;</a>
+                        <div class="content">
+                            <h2>About / Impressum</h2>
+    <p>
+Author and responsible person: <a href = "https://www.aegyptologie.uni-mainz.de/ilin-tomich/">Alexander Ilin-Tomich</a>
+</p>
+<p>
+Institut für Altertumswissenschaften, Ägyptologie
+<br>
+FB 07, Johannes Gutenberg-Universität Mainz
+<br>
+55099 Mainz, Deutschland
+</p>
+<p>
+Tel.: +4961313938345
+<br>
+E-Mail: <a href = "mailto:ailintom@uni-mainz.de">ailintom@uni-mainz.de</a>
+</p>
+                        </div>
+                    </div>
+                </div>
 </body>
 </html>
