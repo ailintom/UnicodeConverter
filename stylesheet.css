@@ -1,9 +1,17 @@
 
 body {
-    font-family:Roboto, New Athena Unicode, DejaVu Sans, sans-serif;
+    font-family:Roboto, Noto Serif, New Athena Unicode, Andika, sans-serif;
     font-size:large;
 }
 
+.trlit {
+    font-family:Noto Serif; font-style: italic;
+    
+}
+
+textarea{
+    font-size:large;
+}
 .limit {max-width: 1024px; } 
 
 h1{
@@ -119,13 +127,11 @@ h3{
 }
 
 @font-face {
-    font-family: 'New Athena Unicode';
-    src: url('NewAthenaUnicode.eot');
-    src: url('NewAthenaUnicode.eot?#iefix') format('embedded-opentype'),
-        url('NewAthenaUnicode.woff2') format('woff2'),
-        url('NewAthenaUnicode.woff') format('woff');
+    font-family: 'Noto Serif';
+    src: url('NotoSerif-Italic.woff2') format('woff2'),
+        url('NotoSerif-Italic.woff') format('woff');
     font-weight: normal;
-    font-style: normal;
+    font-style: italic;
 }
 
 fieldset{
