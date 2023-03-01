@@ -1,14 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="stylesheet.css" rel="stylesheet">
-        <title>Transliteration to Unicode Converter</title>
-    </head>
-    <body>
-        <?php
+<?php
+        define("APIMODE_TRUE", "true"); // runs in API mode, returns only the converted text without the web-page
         define("SMALL_ALEPH_AYIN", "small"); // small Aleph and Ayin used as default
+        
         define("CAPITAL_ALEPH_AYIN", "capital");  // capital Aleph and Ayin used as default
         define("YOD_01310357", "i01310357"); // Yod represented by ı and U+0357
         define("YOD_00690357", "i00690357"); // Yod represented by i and U+0357 
@@ -145,18 +138,35 @@
 // The script accepts both POST and GET arguments        
         if (isset($_POST["input"])) {
             $format = filter_input(INPUT_POST, 'format', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
+            $apimode = filter_input(INPUT_POST, 'apimode', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);            
             $alephayin = filter_input(INPUT_POST, 'alephayin', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
             $yod = filter_input(INPUT_POST, 'yod', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
             $input = htmlspecialchars(str_replace('&', AMPERSAND_ESCAPE, $_POST["input"]));
         } elseif (isset($_GET["input"]) || isset($_GET["yod"])) {
             $format = filter_input(INPUT_GET, 'format', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
+            $apimode = filter_input(INPUT_GET, 'apimode', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);            
             $alephayin = filter_input(INPUT_GET, 'alephayin', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
             $yod = filter_input(INPUT_GET, 'yod', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
             $input = htmlspecialchars(str_replace('&', AMPERSAND_ESCAPE, $_GET["input"]));
         } else {
-            $format = $alephayin = $yod = $input = "";
+            $format = $alephayin = $yod = $apimode = $input = "";
+        }
+        $conversion_result = convert_escaped_to_unicode($input, $alephayin, $yod, $format);
+        if ($apimode === APIMODE_TRUE){
+            
+            exit (trim($conversion_result));
+            //exit();
         }
         ?>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="stylesheet.css" rel="stylesheet">
+        <title>Transliteration to Unicode Converter</title>
+    </head>
+    <body>
         <div class=limit><h2>Transliteration to Unicode Converter</h2><p>
             <h3>Please enter a passage with Egyptian transliteration below</h3>
         </div><form action='index.php' method='post'>
@@ -239,7 +249,7 @@
                             <br>Unlike the capital and small variants of aleph and ayin, different encodings of yod are despite similar outlook mutually incompatible; as per <a href="http://unicode.org/faq/char_combmark.html#21">the official Unicode FAQ</a>, computer software considers them completely different signs, not variants of the same sign.
                             <h2>i̯</h2>
                             <span class="trlit">i̯</span>  (i and U+032F) is used in the <i>Berlin Text System</i> (BTS) to encode weak last consonants in verbs. It corresponds to i in the non-Unicode online version of the <a href="http://aaew.bbaw.de/tla/servlet/TlaLogin"><i>Thesaurus Linguae Aegyptiae</i></a>. With this option selected, the Converter also makes other transformations to make the transliteration compatible with the BTS.
-                            <h2>Acknowldgements</h2>I am grateful to D.&nbsp;A.&nbsp;Werning and T.&nbsp;Konrad for valuable corrections to this page.
+                            
                         </div>
                     </div>
                 </div>
@@ -280,7 +290,7 @@
                         console.log(e);
                     });
                 </script>
-                <div class=limit><p><textarea name="output" id="out" spellcheck="false" autofocus rows="5" style="width:100%; font-family:Noto Serif; font-style: italic; letter-spacing: 0.2px;"><?= str_replace(AMPERSAND_ESCAPE, '&amp;', convert_escaped_to_unicode($input, $alephayin, $yod, $format)) ?></textarea></p>
+                <div class=limit><p><textarea name="output" id="out" spellcheck="false" autofocus rows="5" style="width:100%; font-family:Noto Serif; font-style: italic; letter-spacing: 0.2px;"><?= str_replace(AMPERSAND_ESCAPE, '&amp;', $conversion_result) ?></textarea></p>
                                         <button class="btn" data-clipboard-target="#out"> Copy to clipboard</button></div>
                                                                                                                                                                         </div>
             <?php
@@ -327,6 +337,7 @@ Tel.: +4961313938345
 <br>
 E-Mail: <a href = "mailto:ailintom@uni-mainz.de">ailintom@uni-mainz.de</a>
 </p>
+<h2>Acknowledgements</h2>I am grateful to D.&nbsp;A.&nbsp;Werning and T.&nbsp;Konrad for valuable corrections to this page.
                         </div>
                     </div>
                 </div>
